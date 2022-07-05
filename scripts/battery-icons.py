@@ -1,7 +1,4 @@
 import time
-start = time.time()
-
-
 import os
 from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES
 
@@ -77,4 +74,3 @@ for elem in I3BARVARIABLES:
         result[elem] = batteryVariables[elem]  # filling json with i3bar parametres
 
 print(str(result).replace("'", '"'))  # returning result in json
-print(time.time()-start)
