@@ -1,15 +1,5 @@
-import time
 import os
 from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES
-
-# available prefixes:
-# charging
-# battery0
-# battery20
-# battery50
-# battery80
-# battery100
-
 
 # path to battery files via sysfs
 BATTERYPATH = "/sys/class/power_supply/BAT0"
@@ -30,6 +20,7 @@ def getBatteryInfo() -> dict:  # getting info about current state of battery
 
     return batteryInfo
 
+
 result = dict()
 
 try:
@@ -46,7 +37,13 @@ for key in data:
     batteryVariables[key] = data[key]  # replace base values with custom
 
 # replace variables with prefix ones
-if 80 < batteryInfo["capacity"] <= 100 and "battery80" in variablesWithPrefix:
+if batteryInfo['status'] == "Charging" and "charging" in variablesWithPrefix:
+    for key in variablesWithPrefix["charging"].keys():
+        batteryVariables[key] = variablesWithPrefix["charging"][key]
+elif batteryInfo["status"] == "Full" and "full" in variablesWithPrefix:
+    for key in variablesWithPrefix["full"].keys():
+        batteryVariables[key] = variablesWithPrefix["full"][key]
+elif 80 < batteryInfo["capacity"] < 100 and "battery80" in variablesWithPrefix:
     for key in variablesWithPrefix["battery80"].keys():
         batteryVariables[key] = variablesWithPrefix["battery80"][key]
 elif 50 < batteryInfo["capacity"] <= 80 and "battery50" in variablesWithPrefix:
@@ -58,9 +55,6 @@ elif 20 < batteryInfo["capacity"] <= 50 and "battery20" in variablesWithPrefix:
 elif 0 < batteryInfo["capacity"] <= 20 and "battery0" in variablesWithPrefix:
     for key in variablesWithPrefix["battery0"].keys():
         batteryVariables[key] = variablesWithPrefix["battery0"][key]
-elif batteryInfo['status'] == "Charging" and "charging" in variablesWithPrefix.keys():
-    for key in variablesWithPrefix["charging"].keys():
-        batteryVariables[key] = variablesWithPrefix["charging"][key]
 
 batteryVariables["template"].strip()
 
