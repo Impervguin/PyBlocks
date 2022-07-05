@@ -1,15 +1,20 @@
-import json
+from configparser import ConfigParser
 import os
 from jinja2 import Template
 
 
 def getData(section) -> dict:
+    configur = ConfigParser()
+    configur.read(os.path.join(os.path.dirname(__file__), "data.ini"))
     try:
-        with open(os.path.join(os.path.dirname(__file__), "data.json"), "r", encoding="utf-8") as f:
-            d = json.load(f)
-        return d[section]
+        Data = configur[section]
+        d = dict()
+        for i in Data.keys():
+            d[i] = Data[i]
+        return d
     except KeyError:
         return dict()
+
 
 def splitPrefix(rawData) -> tuple:
     variablesWithPrefix = dict()
