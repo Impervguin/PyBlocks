@@ -57,3 +57,7 @@ def fillJSON(json: dict, variables: dict):
         if elem in variables.keys():
             json[elem] = variables[elem]
     return json
+
+def returnJSON(json):
+    print(str(json).replace("'", '"'))
+

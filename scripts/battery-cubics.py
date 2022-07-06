@@ -1,5 +1,5 @@
 import os
-from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES, fillJSON
+from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES, fillJSON, returnJSON
 from math import ceil
 
 # available prefixes:
@@ -42,7 +42,7 @@ if batteryInfo['status'] in ("Charging", "Full") and "charging" in variablesWith
 
 if not isinstance(batteryVariables["marking-count"], int):
     batteryVariables["marking-count"] = int(batteryVariables["marking-count"])
-batteryVariables["template"].strip()
+batteryVariables["template"] = batteryVariables["template"].strip()
 
 batteryCapacity = ceil(
     batteryInfo["capacity"] / (100 / batteryVariables["marking-count"]))  # counting how much markings are filled
@@ -55,4 +55,4 @@ result["full_text"] = fillFormat(batteryVariables)
 
 result = fillJSON(result, batteryVariables)  # filling json with i3bar parametres
 
-print(str(result).replace("'", '"'))  # returning result in json
+returnJSON(result)  # returning result in json

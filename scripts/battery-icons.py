@@ -1,5 +1,5 @@
 import os
-from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES, fillJSON
+from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES, fillJSON, returnJSON
 
 # path to battery files via sysfs
 BATTERYPATH = "/sys/class/power_supply/BAT0"
@@ -9,8 +9,6 @@ batteryVariables = {
     "template": "{{item}}"
 }
 
-HIGH = 70
-LOW = 10
 
 def getBatteryInfo() -> dict:  # getting info about current state of battery
     batteryInfo = dict()
@@ -55,4 +53,4 @@ result["full_text"] = fillFormat(batteryVariables)
 
 result = fillJSON(result, batteryVariables)  # filling json with i3bar parametres
 
-print(str(result).replace("'", '"'))  # returning result in json
+returnJSON(result)  # returning result in json
