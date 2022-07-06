@@ -29,23 +29,16 @@ def getBatteryInfo() -> dict:  # getting info about current state of battery
 
 result = dict()
 
-try:
-    batteryInfo = getBatteryInfo()
-except BaseException as e:
-    print("Failed to get battery info")
-    exit()
+batteryInfo = getBatteryInfo()
 
 batteryBlockData = getData("battery-cubics")  # getting custom variables from data.ini
 
 data, variablesWithPrefix = splitPrefix(batteryBlockData)  # split variables by prefix
 
-for key in data:
-    batteryVariables[key] = data[key]  # replace base values with custom
-
+batteryVariables.update(data)  # replace base values with custom
 
 if batteryInfo['status'] in ("Charging", "Full") and "charging" in variablesWithPrefix.keys():
-    for key in variablesWithPrefix["charging"].keys():
-        batteryVariables[key] = variablesWithPrefix["charging"][key]  # replace variables with prefix ones
+    batteryVariables.update(variablesWithPrefix["charging"])  # replace variables with prefix ones
 
 if not isinstance(batteryVariables["marking-count"], int):
     batteryVariables["marking-count"] = int(batteryVariables["marking-count"])
@@ -60,6 +53,6 @@ batteryVariables["item"] = item
 
 result["full_text"] = fillFormat(batteryVariables)
 
-result = fillJSON(result, batteryVariables) # filling json with i3bar parametres
+result = fillJSON(result, batteryVariables)  # filling json with i3bar parametres
 
 print(str(result).replace("'", '"'))  # returning result in json

@@ -11,6 +11,7 @@ def getData(section) -> dict:
     except KeyError:
         return dict()
 
+
 def splitPrefix(rawData) -> tuple:
     variablesWithPrefix = dict()
     data = dict()
@@ -49,7 +50,9 @@ I3BARVARIABLES = [
     "separator_block_width",
     "markup"
 ]
-def fillJSON(json:dict, variables:dict):
+
+
+def fillJSON(json: dict, variables: dict):
     for elem in I3BARVARIABLES:
         if elem in variables.keys():
             json[elem] = variables[elem]

@@ -1,5 +1,5 @@
 import os
-from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES
+from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES, fillJSON
 
 # path to battery files via sysfs
 BATTERYPATH = "/sys/class/power_supply/BAT0"
@@ -9,6 +9,8 @@ batteryVariables = {
     "template": "{{item}}"
 }
 
+HIGH = 70
+LOW = 10
 
 def getBatteryInfo() -> dict:  # getting info about current state of battery
     batteryInfo = dict()
@@ -23,38 +25,26 @@ def getBatteryInfo() -> dict:  # getting info about current state of battery
 
 result = dict()
 
-try:
-    batteryInfo = getBatteryInfo()
-except BaseException as e:
-    print("Failed to get battery info")
-    exit()
+batteryInfo = getBatteryInfo()
 
 batteryBlockData = getData("battery-icons")  # getting custom variables from data.ini
 
 data, variablesWithPrefix = splitPrefix(batteryBlockData)  # split variables by prefix
 
-for key in data:
-    batteryVariables[key] = data[key]  # replace base values with custom
-
+batteryVariables.update(data)  # replace base values with custom
 # replace variables with prefix ones
 if batteryInfo['status'] == "Charging" and "charging" in variablesWithPrefix:
-    for key in variablesWithPrefix["charging"].keys():
-        batteryVariables[key] = variablesWithPrefix["charging"][key]
+    batteryVariables.update(variablesWithPrefix["charging"])
 elif batteryInfo["capacity"] == 100 and "full" in variablesWithPrefix:
-    for key in variablesWithPrefix["full"].keys():
-        batteryVariables[key] = variablesWithPrefix["full"][key]
+    batteryVariables.update(variablesWithPrefix["full"])
 elif 80 < batteryInfo["capacity"] < 100 and "battery80" in variablesWithPrefix:
-    for key in variablesWithPrefix["battery80"].keys():
-        batteryVariables[key] = variablesWithPrefix["battery80"][key]
+    batteryVariables.update(variablesWithPrefix["battery80"])
 elif 50 < batteryInfo["capacity"] <= 80 and "battery50" in variablesWithPrefix:
-    for key in variablesWithPrefix["battery50"].keys():
-        batteryVariables[key] = variablesWithPrefix["battery50"][key]
+    batteryVariables.update(variablesWithPrefix["battery50"])
 elif 20 < batteryInfo["capacity"] <= 50 and "battery20" in variablesWithPrefix:
-    for key in variablesWithPrefix["battery20"].keys():
-        batteryVariables[key] = variablesWithPrefix["battery20"][key]
+    batteryVariables.update(variablesWithPrefix["battery20"])
 elif 0 < batteryInfo["capacity"] <= 20 and "battery0" in variablesWithPrefix:
-    for key in variablesWithPrefix["battery0"].keys():
-        batteryVariables[key] = variablesWithPrefix["battery0"][key]
+    batteryVariables.update(variablesWithPrefix["battery0"])
 
 batteryVariables["template"].strip()
 
@@ -62,9 +52,7 @@ item = str(batteryInfo["capacity"])
 batteryVariables["item"] = item
 
 result["full_text"] = fillFormat(batteryVariables)
-fi
-for elem in I3BARVARIABLES:
-    if elem in batteryVariables.keys():
-        result[elem] = batteryVariables[elem]  # filling json with i3bar parametres
+
+result = fillJSON(result, batteryVariables)  # filling json with i3bar parametres
 
 print(str(result).replace("'", '"'))  # returning result in json
