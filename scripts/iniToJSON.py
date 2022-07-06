@@ -19,3 +19,5 @@ def iniToJSON(fName):
         print("Success!")
     except KeyError:
         return dict()
+
+iniToJSON("data.ini")
