@@ -1,5 +1,5 @@
 import os
-from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES
+from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES, fillJSON
 from math import ceil
 
 # available prefixes:
@@ -60,8 +60,6 @@ batteryVariables["item"] = item
 
 result["full_text"] = fillFormat(batteryVariables)
 
-for elem in I3BARVARIABLES:
-    if elem in batteryVariables.keys():
-        result[elem] = batteryVariables[elem]  # filling json with i3bar parametres
+result = fillJSON(result, batteryVariables) # filling json with i3bar parametres
 
 print(str(result).replace("'", '"'))  # returning result in json

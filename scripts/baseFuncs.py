@@ -49,3 +49,8 @@ I3BARVARIABLES = [
     "separator_block_width",
     "markup"
 ]
+def fillJSON(json:dict, variables:dict):
+    for elem in I3BARVARIABLES:
+        if elem in variables.keys():
+            json[elem] = variables[elem]
+    return json

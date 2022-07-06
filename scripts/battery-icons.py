@@ -40,7 +40,7 @@ for key in data:
 if batteryInfo['status'] == "Charging" and "charging" in variablesWithPrefix:
     for key in variablesWithPrefix["charging"].keys():
         batteryVariables[key] = variablesWithPrefix["charging"][key]
-elif batteryInfo["status"] == "Full" and "full" in variablesWithPrefix:
+elif batteryInfo["capacity"] == 100 and "full" in variablesWithPrefix:
     for key in variablesWithPrefix["full"].keys():
         batteryVariables[key] = variablesWithPrefix["full"][key]
 elif 80 < batteryInfo["capacity"] < 100 and "battery80" in variablesWithPrefix:
@@ -62,7 +62,7 @@ item = str(batteryInfo["capacity"])
 batteryVariables["item"] = item
 
 result["full_text"] = fillFormat(batteryVariables)
-
+fi
 for elem in I3BARVARIABLES:
     if elem in batteryVariables.keys():
         result[elem] = batteryVariables[elem]  # filling json with i3bar parametres
