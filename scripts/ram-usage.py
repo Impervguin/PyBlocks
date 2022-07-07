@@ -1,6 +1,5 @@
 from baseFuncs import fillFormat, getData, splitPrefix, I3BARVARIABLES, fillJSON, returnJSON
 from psutil import virtual_memory
-from psutil._common import bytes2human
 
 # special variables:
 # used
@@ -12,7 +11,6 @@ from psutil._common import bytes2human
 
 RAMVariables = {
     "template": "{{item}}",
-    "format": "usedtotal"
 }
 
 LOW = 30
@@ -31,7 +29,7 @@ def getRAMInfo() -> dict:
 result = {}
 RAM = getRAMInfo()
 
-RAMBlockData = getData("ram")
+RAMBlockData = getData("ram-usage")
 
 data, variablesWithPrefix = splitPrefix(RAMBlockData)
 
@@ -45,7 +43,8 @@ elif RAM["procent"] > HIGH and "high" in variablesWithPrefix.keys():
 RAMVariables["used"] = round(RAM["used"], 1)
 RAMVariables["total"] = round(RAM["total"], 1)
 RAMVariables["available"] = round(RAM["total"] - RAM["used"], 1)
-RAMVariables["procent"] = round(RAM["procent"], 1)
+RAMVariables["procentused"] = round(RAM["procent"], 1)
+RAMVariables["procentavailable"] = round(100 - RAM["procent"], 1)
 RAMVariables["item"] = f'{RAMVariables["used"]}/{RAMVariables["total"]}'
 
 RAMVariables["template"] = RAMVariables["template"].strip()
